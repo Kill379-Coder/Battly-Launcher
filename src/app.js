@@ -492,7 +492,7 @@ if (!gotTheLock) {
   app.whenReady().then(() => {
     if (store.get("launchboost")) {
       fetch(
-        "https://api.battly.site/v3/launcher/config-launcher/config.json"
+        "https://api.battly.site/battlylauncher/launcher/config-launcher/config.json"
       )
         .then(async (res) => {
           let data = await res.json();
@@ -991,11 +991,11 @@ ipcMain.handle("update-app", () => {
       .catch((error) => resolve({ error: true, message: error }));
   });
 });
-const pkgVersion = async () => ({ version: "3.0.1", buildVersion: 1004 });
+const pkgVersion = async () => ({ version: "1.0.1", buildVersion: 1002 });
 ipcMain.handle("update-new-app", async () => {
   console.log(await pkgVersion());
   return new Promise(async (resolve, reject) => {
-    fetch("https://api.battly.site/v3/launcher/config-launcher/config.json")
+    fetch("https://api.battly.site/battlylauncher/launcher/config-launcher/config.json")
       .then(async (res) => {
         let data = await res.json();
         let version = data.battly.release;
