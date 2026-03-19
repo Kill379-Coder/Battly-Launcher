@@ -1,2 +1,2 @@
-# Battly-Launcher
+# Battly Launcher
 
