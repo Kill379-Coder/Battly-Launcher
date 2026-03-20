@@ -7,15 +7,15 @@ const progress = require('progress-stream');
 const { ipcRenderer } = require('electron');
 const marked = require('marked');
 
-require('./assets/js/utils/stringLoader.js');
+import { Lang } from './utils/lang.js';
 
 const pipeline = util.promisify(stream.pipeline);
-let lang = {};
+let lang;
 
 const pkgVersion = async () => {
     const pkg = {
         version: "1.0.0",
-        buildVersion: 1001
+        buildVersion: 1003
     };
     return pkg;
 };
@@ -43,7 +43,7 @@ class Splash {
             //     document.getElementById("start-download").style.display = "none";
             // });
 
-            await window.ensureStringLoader?.();
+            lang = await new Lang().GetLang();
         } catch (error) {
             console.error("Error loading configuration:", error);
         }

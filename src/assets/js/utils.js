@@ -4,11 +4,19 @@ import logger from './utils/logger.js';
 import slider from './utils/slider.js';
 const axios = require('axios');
 const { ipcRenderer } = require('electron');
+const { trackEvent } = require("@aptabase/electron/renderer");
 import { Alert } from "./utils/alert.js";
 const { getValue, setValue } = require('./assets/js/utils/storage');
 const AnalyticsHelper = require('./assets/js/utils/analyticsHelper.js');
 
-require('./assets/js/utils/stringLoader.js');
+const { Lang } = require("./assets/js/utils/lang.js");
+let lang;
+
+new Lang().GetLang().then(lang_ => {
+    lang = lang_;
+}).catch(error => {
+    console.error("Error cargando idioma:", error);
+});
 
 export {
     config as config,
@@ -157,11 +165,10 @@ async function accountSelect(uuid, reload = false) {
         await setValue('selected-account', uuid);
     }
 
-    const t = {
-        account_selected: window.stringLoader?.getString("common.account_selected") || 'Cuenta seleccionada',
-        account_selected_text: window.stringLoader?.getString("common.account_selected_text") || 'Has seleccionado',
-        account_selected_text_two: window.stringLoader?.getString("common.account_selected_text_two") || 'como cuenta activa'
-    };
+    const t = lang || {};
+    const titleOk = t.account_selected || 'Cuenta seleccionada';
+    const textOk1 = t.account_selected_text || 'Has seleccionado';
+    const textOk2 = t.account_selected_text_two || 'como cuenta activa';
     const accNameText = (account.querySelector('.account-name')?.textContent || '').trim();
 
     if (reload) {
@@ -174,9 +181,6 @@ async function accountSelect(uuid, reload = false) {
         }, 2000);
         return;
     } else {
-        const titleOk = t.account_selected;
-        const textOk1 = t.account_selected_text;
-        const textOk2 = t.account_selected_text_two;
         new Alert().ShowAlert({
             icon: 'success',
             title: titleOk,
@@ -238,18 +242,9 @@ async function accountSelect(uuid, reload = false) {
             content.style.backgroundColor = '#0f1623';
 
             const texts = [
-                window.stringLoader?.getString("common.premium_screen_1") || "",
-                window.stringLoader?.getString("common.premium_screen_2") || "",
-                window.stringLoader?.getString("common.premium_screen_3") || "",
-                window.stringLoader?.getString("common.premium_screen_4") || "",
-                window.stringLoader?.getString("common.premium_screen_5") || "",
-                window.stringLoader?.getString("common.premium_screen_6") || "",
-                window.stringLoader?.getString("common.premium_screen_7") || "",
-                window.stringLoader?.getString("common.premium_screen_8") || "",
-                window.stringLoader?.getString("common.premium_screen_9") || "",
-                window.stringLoader?.getString("common.premium_screen_10") || "",
-                window.stringLoader?.getString("common.premium_screen_11") || "",
-                window.stringLoader?.getString("common.premium_screen_12") || "",
+                t.premium_screen_1, t.premium_screen_2, t.premium_screen_3, t.premium_screen_4,
+                t.premium_screen_5, t.premium_screen_6, t.premium_screen_7, t.premium_screen_8,
+                t.premium_screen_9, t.premium_screen_10, t.premium_screen_11, t.premium_screen_12,
             ].filter(Boolean);
 
             for (let i = 0; i < texts.length; i++) {
@@ -310,3 +305,4 @@ async function headplayer(id, pseudo, isOffline) {
         element.style.backgroundImage = `url(https://minotar.net/skin/${pseudo}.png)`
     }
 }
+
